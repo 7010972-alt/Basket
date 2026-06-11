@@ -1,12 +1,22 @@
 //my added constants
 
+
+//player variabls
 var JUMP_MUILT = 1;
 var SPEED_MUILTI = 1;
 
+
+//bot variables
 var BOT_SPEED_MUILTI = 1;
 var BOT_JUMP_MUILTI = 1;
 
-var GAME_TIME = 100;
+var BOT_DIFFICULTY = 10;
+
+//both variables
+var KNOCK_DOWN_DURATION = 1000;
+
+//game variables
+var GAME_TIME = 60;
 
 
 var $jscomp = $jscomp || {};
@@ -7286,7 +7296,7 @@ function(ea, x) {
                         m.player.tourneyRound = L.parseInt(t)) : m.player.tourneyRound = 1,
                         Yb.resolve(I, "selection") && (m.player.tourneySelection = Tb.resolve(I, "selection")),
                         Yb.resolve(I, "difficulty") && (I = Tb.resolve(I, "difficulty"),
-                        m.player.difficulty = L.parseInt(I))
+                        m.player.difficulty = BOT_DIFFICULTY)
                     }
                 }
             }
@@ -8948,7 +8958,7 @@ function(ea, x) {
                 case "Step Flurry":
                     return 10;
                 case "Veloci Raptor":
-                    return 50
+                    return 500
                     return 2
                 }
                 return 5
@@ -9248,7 +9258,7 @@ function(ea, x) {
                 case "Zat MaChine":
                     return 4
                 case "Veloci Raptor":
-                    return 50
+                    return 1000
                 }
                 return 5
             }
@@ -9511,6 +9521,7 @@ function(ea, x) {
                                         null != s && (l -= 2 * s.mHandles),
                                         i instanceof Ja && (l = null != s && s.score - 2 > i.score ? 100 : 50),
                                         s = o.GetChildByNameRecursive("head_bone"),
+                                        console.log(o)
                                         null != e && e.guyPosessedBy == o && null != s && Math.abs(i.hand.loc.x - s.loc.x) < l && .95 <= o.local_alp ? (i.steals++,
                                         i.KnockDown(o),
                                         I.PlaySound(df.Get()),
@@ -9531,7 +9542,7 @@ function(ea, x) {
                     }
                 },
                 KnockDown: function(i, e) {
-                    null == e && (e = 1e3),
+                    null == e && (e = KNOCK_DOWN_DURATION),
                     i.shotStreak = 0,
                     i.mode = va.MODE_KNOCKED_OUT,
                     i.KillAllMovements(),
@@ -10136,6 +10147,8 @@ function(ea, x) {
                 },
                 __class__: ha
             });
+
+            //bot stuff
             var Ja = function(i, e) {
                 if (null == e && (e = 1),
                 ha.call(this, i, e),
@@ -10198,7 +10211,7 @@ function(ea, x) {
                 m.player.secondGuyPantsColor = ha.GetDefaultPantsColor(m.player.secondGuyClassName),
                 Sb.ColorizeBones(this.bones, !0),
                 Sb.RemoveLogo(this.bones),
-                m.player.difficulty = 2,
+                m.player.difficulty = BOT_DIFFICULTY,
                 Ja.doDiff && (Ja.doDiff = !1)
             };
             p.CPUGuy = Ja,
@@ -16960,7 +16973,7 @@ function(ea, x) {
                         if (i && 0 < m.player.wins && !H.onlineGame) {
                             Cb.adBlockEvent || (SendEvent("event", "adblock_detected"),
                             Cb.adBlockEvent = !0),
-                            this.adBlockTimer = 6;
+                            this.adBlockTimer = 0;
                             var C = t.AddMovement(4, 1, 1, 1e3, !0);
                             t.AddEvent((function() {
                                 m.HideAllAds(),
