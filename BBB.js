@@ -7,15 +7,17 @@ var SPEED_MUILTI = 1;
 
 var DECEL_MUILTI = 1;
 
-
 //bot variables
 var BOT_SPEED_MUILTI = 1;
 var BOT_JUMP_MUILTI = 1;
 
 var BOT_DIFFICULTY = 10;
 
+
 //both variables
 var KNOCK_DOWN_DURATION = 1000;
+var TACKLE_RECOVERY_MUILTI = 1;
+var STEAL_COOLDOWN_MUILTI = 1;
 
 //raptor
 var rapSpeed = 50;
@@ -33,6 +35,12 @@ var shackHops = 10;
 
 //game variables
 var GAME_TIME = 60;
+var DUNK_POINTS = 2;
+var SHOT_POINTS = 3;
+var DUNK_RANGE = 400;
+var GRAVITY_MUILT = 1;
+
+var STREAK_AMOUNT = 3;
 
 
 var $jscomp = $jscomp || {};
@@ -8340,7 +8348,7 @@ function(ea, x) {
                     }
                 },
                 DoBurn: function() {
-                    if (!(m.player.practiceMode || null == this.guyPosessedBy && null == this.shotBy || null != this.guyPosessedBy && 3 > this.guyPosessedBy.shotStreak || null != this.shotBy && 3 > this.shotBy.shotStreak || this.mode == P.POSESSED || 1 > this.alp)) {
+                    if (!(m.player.practiceMode || null == this.guyPosessedBy && null == this.shotBy || null != this.guyPosessedBy && STREAK_AMOUNT > this.guyPosessedBy.shotStreak || null != this.shotBy && STREAK_AMOUNT > this.shotBy.shotStreak || this.mode == P.POSESSED || 1 > this.alp)) {
                         var i = y.AddGameObject();
                         i.Init(q.WHITE_PARTICLE_PNG()),
                         i.blendMode = 0;
@@ -8439,10 +8447,9 @@ function(ea, x) {
                     }
                 }
                 this.xSpeed = this.ySpeed = 0,
-                this.gravity = .95,
+                this.gravity = .95 * GRAVITY_MUILT,
                 this.topSpeed = 8,
                 this.deceleration = .94 * DECEL_MUILTI,
-                // this.deceleration = .94 * 0.5,
                 this.jumpSpeed = 20,
                 this.muleq = .6,
                 this.restX = m.SCREENWIDTH / 4,
@@ -9509,13 +9516,15 @@ function(ea, x) {
                         i = (0 < (i = this.xSpeed) ? 1 : 0 > i ? -1 : 0) == (0 < (e = this.bones.local_xScale) ? 1 : 0 > e ? -1 : 0) ? "walk" : "walk_back";
                     return i
                 },
+
+                //attempt a steal
                 InitPunch: function() {
                     var i = this;
                     if (!(0 < this.punchCounter)) {
                         this.mode = va.MODE_SPECIAL_MOVE,
                         this.bones.PlayAnimation(this.GetAttackPerk().animName, !1, 0, 3.5),
                         this.AddMovement(13, 0, 0, 100),
-                        this.punchCounter = 60,
+                        this.punchCounter = 60 * STEAL_COOLDOWN_MUILTI,
                         this.AddEvent((function() {
                             I.PlaySound(cf.Get()),
                             I.PlaySound(Ud.Get())
@@ -9548,7 +9557,8 @@ function(ea, x) {
                                         I.AddFlash(i.hand, 0, 4, 4),
                                         I.ShakeScreen(),
                                         i.mode = va.MODE_IDLE,
-                                        kd.delay(u(i, i.PlayRandomFoulVoice), 100)) : (i.AddMovement(13, 0, 0, 840),
+
+                                        kd.delay(u(i, i.PlayRandomFoulVoice), 100)) : (i.AddMovement(13, 0, 0, 840 * TACKLE_RECOVERY_MUILTI),
                                         i.AddEvent((function() {
                                             i.mode == va.MODE_SPECIAL_MOVE && (i.bones.PlayAnimation("idle", !0, 140),
                                             i.mode = va.MODE_IDLE)
@@ -9734,10 +9744,14 @@ function(ea, x) {
                     if ("shoot" != this.bones.currentAnim && "block" != this.bones.currentAnim) {
                         var t = this.GetBall();
                         if (null != t && t.guyPosessedBy == this) {
+
+                            //dunking ball
                             var C = Math.abs(this.local_loc.x - (this.side == Ia.SIDE_LEFT ? H.rimX2 : H.rimX1));
                             if (this.fgAttempts++,
-                            400 > C && this.mode != va.MODE_DUNKING) {
-                                H.shotPoints = 2,
+                            DUNK_RANGE > C && this.mode != va.MODE_DUNKING) {
+
+                                //dunk points
+                                H.shotPoints = DUNK_POINTS,
                                 this.bones.PlayAnimation(this.GetRandomDunk(), !1),
                                 this.mode = va.MODE_DUNKING,
                                 t.shotBy = this,
@@ -9880,9 +9894,14 @@ function(ea, x) {
                                     ))
                                 }
                                 ))
-                            } else if (this.mode != va.MODE_DUNKING) {
+                            } 
+                            
+                            //shooting the ball
+                            else if (this.mode != va.MODE_DUNKING) {
                                 this.PlayShotSound(),
-                                H.shotPoints = 3,
+
+                                //shot points
+                                H.shotPoints = SHOT_POINTS,
                                 this.threePointAttempts++,
                                 this.bones.PlayAnimation("shoot", !1),
                                 this.ySpeed -= 5,
@@ -9897,7 +9916,7 @@ function(ea, x) {
                                         var C = -Math.PI / 2;
                                         C = e.side == Ia.SIDE_RIGHT ? C - Math.PI / 6 : C + Math.PI / 6;
                                         var o = Math.sqrt(12.75 * (Math.pow(Math.abs(t.local_loc.x - (e.side == Ia.SIDE_LEFT ? H.rimX2 : H.rimX1)), .983) + Math.abs(t.local_loc.y - H.rimY)) / Math.abs(Math.sin(2 * C)));
-                                        if (3 > e.shotStreak || m.player.practiceMode) {
+                                        if (STREAK_AMOUNT > e.shotStreak || m.player.practiceMode) {
 
                                             //shooting accuracy
                                             if (e.mShooting <= 10) {
@@ -10051,7 +10070,7 @@ function(ea, x) {
                     }
                 },
                 DoBurn: function() {
-                    if (!(m.player.practiceMode || 3 > this.shotStreak || 1 != this.tickCounter % 4 || 1 > this.alp))
+                    if (!(m.player.practiceMode || STREAK_AMOUNT > this.shotStreak || 1 != this.tickCounter % 4 || 1 > this.alp))
                         for (var i = 0, e = this.bones.skinImages; i < e.length; ) {
                             var I = e[i];
                             ++i;
@@ -10238,6 +10257,8 @@ function(ea, x) {
             Ja.__name__ = "CPUGuy",
             Ja.__super__ = ha,
             Ja.prototype = B(ha.prototype, {
+
+                //bot punches
                 GetBotPunchMovement: function() {
                     var i = this.GetBall();
                     if (null == i)
@@ -14718,12 +14739,12 @@ function(ea, x) {
                                     i.AddMovement(4, 1, 0, 600);
                                 else if (t.shotStreak++,
                                 t.fgMade++,
-                                3 == H.shotPoints && (t.threePointMade++,
+                                STREAK_AMOUNT == H.shotPoints && (t.threePointMade++,
                                 H.thisMG.panel.CalcPercent()),
-                                null != (C = t.GetOtherGuy()) && 3 <= C.shotStreak && (C.shotStreak = 0),
-                                3 == t.shotStreak && (H.thisMG.panel.AddPopText("HE'S ON FIRE!"),
+                                null != (C = t.GetOtherGuy()) && STREAK_AMOUNT <= C.shotStreak && (C.shotStreak = 0),
+                                STREAK_AMOUNT == t.shotStreak && (H.thisMG.panel.AddPopText("HE'S ON FIRE!"),
                                 I.PlayVoiceSound(Pf.Get())),
-                                3 == H.shotPoints && 3 != t.shotStreak)
+                                STREAK_AMOUNT == H.shotPoints && STREAK_AMOUNT != t.shotStreak)
                                     switch (this.RndInt(1, 6)) {
                                     case 1:
                                         H.thisMG.panel.AddPopText("FROM WAY DOWN TOWN!"),
@@ -16957,7 +16978,7 @@ function(ea, x) {
                     m.player.practiceMode || (this.quarter++,
                     4 >= this.quarter ? this.quarterText.SetText("" + this.quarter) : this.quarterText.SetText("OT"));
                     var i = this.holder.GetChildByType(Ka);
-                    this.timeLeft = 60;
+                    this.timeLeft = GAME_TIME;
                     var e = this.holder
                       , I = e.GetLeftGuy()
                       , t = e.GetRightGuy();
@@ -54888,7 +54909,9 @@ function(ea, x) {
             vc.letterPool = new ca,
             vc.initLetterCache = !0,
             H.distanceFromBottom = 80,
-            H.shotPoints = 2,
+
+            //dunk points
+            H.shotPoints = DUNK_POINTS,
             H.onlineName = "",
             H.onlineGame = !1,
             H.randomSeed = 0,
