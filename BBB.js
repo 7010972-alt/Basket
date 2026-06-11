@@ -5,6 +5,8 @@
 var JUMP_MUILT = 1;
 var SPEED_MUILTI = 1;
 
+var DECEL_MUILTI = 1;
+
 
 //bot variables
 var BOT_SPEED_MUILTI = 1;
@@ -14,6 +16,20 @@ var BOT_DIFFICULTY = 10;
 
 //both variables
 var KNOCK_DOWN_DURATION = 1000;
+
+//raptor
+var rapSpeed = 50;
+var rapHandles = 10;
+var rapShooting = 1000;
+var rapDefense = 10;
+var rapHops = 5;
+
+//shack
+var shackSpeed = 10;
+var shackHandles = 1;
+var shackShooting = 1;
+var shackDefense = 1;
+var shackHops = 10;
 
 //game variables
 var GAME_TIME = 60;
@@ -8425,7 +8441,7 @@ function(ea, x) {
                 this.xSpeed = this.ySpeed = 0,
                 this.gravity = .95,
                 this.topSpeed = 8,
-                this.deceleration = .94,
+                this.deceleration = .94 * DECEL_MUILTI,
                 // this.deceleration = .94 * 0.5,
                 this.jumpSpeed = 20,
                 this.muleq = .6,
@@ -8937,7 +8953,6 @@ function(ea, x) {
                 case "Ty DaHero":
                     return 8;
                 case "Bin Noshoot":
-                case "Shackton Diesel":
                     return 1;
                 case "Clayton Tommy":
                 case "Trey Youth":
@@ -8958,8 +8973,9 @@ function(ea, x) {
                 case "Step Flurry":
                     return 10;
                 case "Veloci Raptor":
-                    return 500
-                    return 2
+                    return rapShooting;
+                case "Shackton Diesel":
+                    return shackShooting;
                 }
                 return 5
             }
@@ -9020,15 +9036,17 @@ function(ea, x) {
                     return 6;
                 case "Colby Mamba":
                 case "Mike Goat":
-                case "Shackton Diesel":
                     return 9;
                 case "Geo Freako":
                     return 8;
-                case "Veloci Raptor":
                 case "Jan Soarant":
                 case "Zane Willow":
                 case "Zat MaChine":
                     return 10
+                case "Veloci Raptor":
+                    return rapHops;
+                case "Shackton Diesel":
+                    return shackHops;
                 }
                 return 5
             }
@@ -9159,7 +9177,6 @@ function(ea, x) {
                 case "Jammy Butter":
                 case "Jay Tater":
                 case "Mystic Johnston":
-                case "Shackton Diesel":
                 case "Step Flurry":
                     return 7;
                 case "Colby Mamba":
@@ -9182,7 +9199,9 @@ function(ea, x) {
                 case "Zane Willow":
                     return 8;
                 case "Veloci Raptor":
-                    return 50
+                    return rapSpeed;
+                case "Shackton Diesel":
+                    return shackSpeed;
                 }
                 return 5
             }
@@ -9217,9 +9236,9 @@ function(ea, x) {
                 case "Kyle Irking":
                     return 10;
                 case "Shackton Diesel":
-                    return 4
+                    return shackHandles;
                 case "Veloci Raptor":
-                    return 50
+                    return rapHandles;
                 }
                 return 5
             }
@@ -9252,13 +9271,14 @@ function(ea, x) {
                 case "Lowry Birdhouse":
                 case "Luke Magic":
                 case "Mellow Baller":
-                case "Shackton Diesel":
                 case "Ty DaHero":
                 case "Zane Willow":
                 case "Zat MaChine":
                     return 4
                 case "Veloci Raptor":
-                    return 1000
+                    return rapDefense;
+                case "Shackton Diesel":
+                    return shackDefense;
                 }
                 return 5
             }
