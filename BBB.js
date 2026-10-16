@@ -42,7 +42,6 @@ var GRAVITY_MUILT = 1;
 
 var STREAK_AMOUNT = 3;
 
-
 var $jscomp = $jscomp || {};
 $jscomp.scope = {},
 $jscomp.arrayIteratorImpl = function(i) {
@@ -53487,7 +53486,7 @@ function(ea, x) {
                     }
                     ,
                     s += 87,
-                    m.thisMain.isPhone() || (i || (this.twoPlayerButton = Oa.AddImageButton("2 PLAYERS SAME PC", q.BU_SINGLEPLAYER_UP_PNG, q.BU_SINGLEPLAYER_HOVER_PNG, -l, s, .6666667, .7, 0, (function() {
+                    m.thisMain.isPhone() || (i || (this.twoPlayerButton = Oa.AddImageButton("2 Players One PC", q.BU_SINGLEPLAYER_UP_PNG, q.BU_SINGLEPLAYER_HOVER_PNG, -l, s, .6666667, .7, 0, (function() {
                         e.StartTwoPlayer(),
                         SendEvent("event", "start_2p_local_game")
                     }
