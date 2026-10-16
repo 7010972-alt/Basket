@@ -1,6 +1,5 @@
 //my added constants
 
-
 //player variabls
 var JUMP_MUILT = 1;
 var SPEED_MUILTI = 1;
